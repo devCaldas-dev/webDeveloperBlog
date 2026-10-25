@@ -1,7 +1,6 @@
 import Link from './Link'
 import siteMetadata from '@/data/siteMetadata'
 import SocialIcon from '@/components/social-icons'
-/* import Logo from '@/data/logo.svg' */
 
 export default function Footer() {
   return (
@@ -13,14 +12,11 @@ export default function Footer() {
           <SocialIcon kind="linkedin" href={siteMetadata.linkedin} size={6} />
         </div>
         <div className="mb-2 flex space-x-2 text-sm text-gray-500 dark:text-gray-400">
-          {/* <div>
-            <Link href="https://devcaldas-dev.github.io/home/" target="_blank">
+          <div>
+            <Link href="https://www.linkedin.com/in/devcaldas/" target="_blank">
               {siteMetadata.author}
             </Link>
-            <Link href="https://www.linkedin.com/in/devcaldas/" target="_blank">
-              {siteMetadata.title}
-            </Link>
-          </div> */}
+          </div>
           <div>{` • `}</div>
           <div>{`© ${new Date().getFullYear()}`}</div>
           <div>{` • `}</div>
