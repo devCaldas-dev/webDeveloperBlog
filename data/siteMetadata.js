@@ -11,10 +11,10 @@ const siteMetadata = {
   siteRepo: 'https://github.com/decaldas/webDeveloperBlog', // private repo,
   siteLogo: '/static/images/imagotype.png',
   email: 'armandotorocardenas@gmail.com',
-  github: 'https://github.com/deCaldas',
+  github: 'https://github.com/devCaldas-dev',
   twitter: 'https://twitter.com/@WhiskeyDeCaldas',
-  linkedin: 'https://www.linkedin.com/in/deCaldas/',
-  youtube: 'https://www.youtube.com/@deCaldas-webDeveloper',
+  linkedin: 'https://www.linkedin.com/in/devCaldas/',
+  youtube: 'https://www.youtube.com/@devCaldas-webDeveloper',
   locale: 'es-CO',
   analytics: {
     // If you want to use an analytics provider you have to add it to the
