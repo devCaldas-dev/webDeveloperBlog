@@ -1,11 +1,46 @@
-import { writeFileSync, mkdirSync } from 'fs'
+import { writeFileSync, mkdirSync, readdirSync, readFileSync } from 'fs'
 import path from 'path'
 import { slug } from 'github-slugger'
-import { escape } from 'pliny/utils/htmlEscaper.js'
+import matter from 'gray-matter'
 import siteMetadata from '../data/siteMetadata.js'
 import tagData from '../app/tag-data.json' with { type: 'json' }
-import { allBlogs } from '../.contentlayer/generated/index.mjs'
-import { sortPosts } from 'pliny/utils/contentlayer.js'
+
+const escape = (value) =>
+  String(value).replace(/[&<>"']/g, (character) => {
+    const entities = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&apos;' }
+    return entities[character]
+  })
+
+function listMdxFiles(directory) {
+  return readdirSync(directory, { withFileTypes: true }).flatMap((entry) => {
+    const entryPath = path.join(directory, entry.name)
+    return entry.isDirectory()
+      ? listMdxFiles(entryPath)
+      : entry.name.endsWith('.mdx')
+        ? [entryPath]
+        : []
+  })
+}
+
+const allBlogs = listMdxFiles(path.join(process.cwd(), 'data', 'blog')).map((filePath) => {
+  const parsed = matter(readFileSync(filePath, 'utf8'))
+  const flattenedPath = path.relative(path.join(process.cwd(), 'data'), filePath)
+    .replace(/\\/g, '/')
+    .replace(/\.mdx$/i, '')
+  const date = parsed.data.date instanceof Date
+    ? parsed.data.date.toISOString()
+    : String(parsed.data.date || '')
+  return {
+    ...parsed.data,
+    date,
+    slug: flattenedPath.replace(/^blog\//, ''),
+    path: flattenedPath,
+    tags: Array.isArray(parsed.data.tags) ? parsed.data.tags : [],
+  }
+})
+
+const sortPosts = (posts) =>
+  [...posts].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
 
 const generateRssItem = (config, post) => `
   <item>
@@ -15,7 +50,7 @@ const generateRssItem = (config, post) => `
     ${post.summary && `<description>${escape(post.summary)}</description>`}
     <pubDate>${new Date(post.date).toUTCString()}</pubDate>
     <author>${config.email} (${config.author})</author>
-    ${post.tags && post.tags.map((t) => `<category>${t}</category>`).join('')}
+    ${post.tags && post.tags.map((t) => `<category>${escape(t)}</category>`).join('')}
   </item>
 `
 
@@ -28,7 +63,7 @@ const generateRss = (config, posts, page = 'feed.xml') => `
       <language>${config.language}</language>
       <managingEditor>${config.email} (${config.author})</managingEditor>
       <webMaster>${config.email} (${config.author})</webMaster>
-      <lastBuildDate>${new Date(posts[0].date).toUTCString()}</lastBuildDate>
+      ${posts.length ? `<lastBuildDate>${new Date(posts[0].date).toUTCString()}</lastBuildDate>` : ''}
       <atom:link href="${config.siteUrl}/${page}" rel="self" type="application/rss+xml"/>
       ${posts.map((post) => generateRssItem(config, post)).join('')}
     </channel>

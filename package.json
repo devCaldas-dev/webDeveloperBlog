@@ -5,10 +5,10 @@
   "private": true,
   "scripts": {
     "prepare": "husky",
-    "start": "next dev --webpack",
-    "dev": "cross-env BASELINE_BROWSER_MAPPING_IGNORE_OLD_DATA=true INIT_CWD=$PWD next dev --webpack",
-    "build": "cross-env BASELINE_BROWSER_MAPPING_IGNORE_OLD_DATA=true next build",
-    "analyze": "cross-env ANALYZE=true next build"
+    "start": "cross-env NODE_ENV=development node scripts/generate-content.mjs && next dev --webpack",
+    "dev": "cross-env NODE_ENV=development node scripts/generate-content.mjs && cross-env BASELINE_BROWSER_MAPPING_IGNORE_OLD_DATA=true INIT_CWD=$PWD next dev --webpack",
+    "build": "cross-env NODE_ENV=production node scripts/generate-content.mjs && cross-env BASELINE_BROWSER_MAPPING_IGNORE_OLD_DATA=true next build",
+    "analyze": "cross-env NODE_ENV=production node scripts/generate-content.mjs && cross-env ANALYZE=true next build"
   },
   "dependencies": {
     "@headlessui/react": "2.2.10",
@@ -16,18 +16,11 @@
     "@tailwindcss/forms": "0.5.11",
     "@tailwindcss/typography": "^0.5.4",
     "autoprefixer": "10.6.1",
-    "contentlayer2": "0.5.8",
-    "date-fns": "4.4.0",
-    "esbuild": "0.28.2",
-    "formidable": "3.5.4",
     "github-slugger": "2.0.0",
     "gray-matter": "4.0.3",
-    "hast-util-from-html-isomorphic": "2.0.0",
-    "image-size": "2.0.4",
     "next": "16.4.3",
-    "next-contentlayer2": "0.5.8",
+    "next-mdx-remote": "6.0.0",
     "next-themes": "0.4.6",
-    "pliny": "0.4.1",
     "postcss": "8.5.31",
     "react": "19.3.1",
     "react-dom": "19.3.1",
@@ -35,20 +28,16 @@
     "rehype-autolink-headings": "7.1.0",
     "rehype-citation": "2.3.2",
     "rehype-katex": "7.0.1",
-    "rehype-preset-minify": "7.0.1",
     "rehype-prism-plus": "2.0.2",
     "rehype-slug": "6.0.0",
-    "remark": "15.0.1",
     "remark-gfm": "4.0.1",
-    "remark-math": "6.0.0",
-    "superagent": "10.4.1",
-    "unist-util-visit": "5.2.0",
-    "vercel": "^53.2.0"
+    "remark-math": "6.0.0"
   },
   "devDependencies": {
     "@svgr/webpack": "8.1.0",
     "@tailwindcss/postcss": "^4.3.3",
     "@types/mdx": "2.0.14",
+    "@types/node": "^24.10.0",
     "@types/react": "19.3.0",
     "@typescript-eslint/eslint-plugin": "8.72.0",
     "@typescript-eslint/parser": "8.72.0",
@@ -62,6 +51,9 @@
     "prettier": "3.9.10",
     "prettier-plugin-tailwindcss": "0.8.1",
     "typescript": "7.0.2"
+  },
+  "overrides": {
+    "katex": "0.18.2"
   },
   "lint-staged": {
     "*.+(js|jsx|ts|tsx)": [
